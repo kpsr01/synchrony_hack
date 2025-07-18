@@ -1,36 +1,104 @@
-# Slack Standup bot
+# Slack Standup Bot
 
-### Host this localy
-1. Clone the repository
-```bash 
-git clone https://github.com/kpsr01/synchrony_hack/
-``` 
+A lightweight, AI‑powered Slack (and Discord) stand-up bot to collect daily team updates, store them locally, and generate summarized reports via the Gemini API.
 
-2. Install the dependencies
+## <<<<<<< HEAD
 
-```bash 
-cd synchrony_hack 
-pip3 install -r requirements.txt
+## Features
+
+- **Channel Monitoring:** Easily set up and manage stand-up channels with slash commands.
+- **Message Storage:** Persist all stand-up messages in a local SQLite database (user, message, timestamp).
+- **AI Summarization:** Generate concise summaries of the day's stand-up using the Gemini API.
+- **Multi‑Platform:** Supports both Slack and Discord with a shared codebase.
+
+---
+
+## Prerequisites
+
+- A Slack workspace (and/or a Discord server)
+- Slack Bot Token & App Token (for Slack)
+- Discord Bot Token (for Discord)
+- Gemini API key
+
+---
+
+## Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/kpsr01/synchrony_hack.git
+   cd synchrony_hack
+   ```
+
+2. **Create a virtual environment (recommended)**
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate      # macOS/Linux
+   .\.venv\Scripts\activate    # Windows
+   ```
+
+3. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## Configuration
+
+Inside the `Slack/` and `Discord/` directories, create a `.env` file with the following variables:
+
+### Slack (`Slack/.env`)
+
+```env
+SLACK_BOT_TOKEN=xoxb-...
+SLACK_APP_TOKEN=xapp-...
+GEMINI_API_KEY=your_gemini_api_key
+DATABASE_URL=sqlite:///standup.db
 ```
 
-3. Create a `.env` file in the discord/slack directory directory and add your Slack/discord bot token and gemini token.
+### 1. Launch the Bot
 
-** For slack**
-```bash 
-SLACK_BOT_TOKEN=xoxb-
-SLACK_APP_TOKEN=xapp-
-GEMINI_API_KEY=
-```
+- **Slack**
 
-** For discord**
-```bash 
-TOKEN=
-GEMINI_API_KEY=
-```
+  ```bash
+  python3 Slack/slackbot.py
+  ```
 
+- **Discord**
 
-4. Run the bot
-```bash 
-python3 Discord/main.py 
-python3 Slack/slackbot.py
-```
+  ```bash
+  python3 Discord/main.py
+  ```
+
+### 2. Slash Commands (Slack)
+
+| Command                            | Description                                       |
+| ---------------------------------- | ------------------------------------------------- |
+| `/set_standup_channel #channel`    | Start tracking messages in the specified channel. |
+| `/list_standup_channels`           | List all configured stand-up channels.            |
+| `/remove_standup_channel #channel` | Stop tracking the specified channel.              |
+| `/ai_summary [#channel]`           | Generate and post a summary of today's stand-ups. |
+
+> **Tip:** If no channel is provided to `/ai_summary`, it summarizes all active stand-up channels.
+
+### 3. Slash Commands (Discord)
+
+| Command                            | Description                                       |
+| ---------------------------------- | ------------------------------------------------- |
+| `!set_standup_channel #channel`    | Start tracking messages in the specified channel. |
+| `!list_standup_channels`           | List all configured stand-up channels.            |
+| `!remove_standup_channel #channel` | Stop tracking the specified channel.              |
+| `!ai_summary [#channel]`           | Generate and post a summary of today's stand-ups. |
+
+---
+
+## Database Schema
+
+| Table      | Columns                                                         |
+| ---------- | --------------------------------------------------------------- |
+| `channels` | `id` (PK), `platform` (slack/discord), `channel_id`             |
+| `standups` | `id` (PK), `user_id`, `channel_id` (FK), `message`, `timestamp` |

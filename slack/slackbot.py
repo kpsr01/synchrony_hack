@@ -211,21 +211,33 @@ class StandupTracker:
         messages_text = "\n".join(trimmed_messages)
 
         prompt = f"""
-        Please analyze the following standup messages from {channel_name} on {date} and provide **ONE** comprehensive summary.
+You are an AI assistant specializing in summarizing team standups. Your task is to analyze the provided Slack messages and generate a single, clear, and concise summary for a manager.
 
-        Focus on:
-        1. Key updates and progress made by team members
-        2. Blockers or challenges mentioned
-        3. Plans for upcoming work
-        4. Important decisions or discussions
-        5. Overall team sentiment and productivity
+**Analyze the standup messages from #{channel_name} on {date}.**
 
-        Format your response as a clear, organized summary that a manager could quickly read to understand the team's status.
-        Please send Only One summary, do not send multiple summaries.
+**Structure your output using the following Markdown format exactly:**
 
-        Messages:
-        {messages_text}
-        """
+### ✅ Progress & Accomplishments
+- [Summary of key progress 1, attributing to the person if possible]
+- [Summary of key progress 2]
+
+### ❗ Blockers & Challenges
+- [List any mentioned blockers or challenges]
+- If no blockers are mentioned, state: "No blockers reported."
+
+### 🗓️ Next Steps & Plans
+- [Summary of plans for today/this week 1]
+- [Summary of plans for today/this week 2]
+
+**Guiding Rules:**
+1.  **Synthesize, Don't List:** Combine related points into a cohesive summary. Do not just list each person's update verbatim.
+2.  **Be Factual:** Base the summary strictly on the messages provided.
+3.  **Ignore Chatter:** Disregard messages that are not status updates (e.g., "good morning", "thanks", simple emoji reactions).
+4.  **Single Output:** Your entire response must be ONLY the Markdown summary. Do not add any introductory or concluding sentences.
+
+**Messages to Analyze:**
+{messages_text}
+"""
 
         try:
             response = self.client.models.generate_content(
