@@ -7,13 +7,13 @@ git clone https://github.com/kpsr01/synchrony_hack/
 ``` 
 
 2. Install the dependencies
+
 ```bash 
 cd synchrony_hack 
 pip3 install -r requirements.txt
 ```
 
 3. Create a `.env` file in the discord/slack directory directory and add your Slack/discord bot token and gemini token.
-```bash
 
 ** For slack**
 ```bash 
