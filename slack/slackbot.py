@@ -253,18 +253,18 @@ async def set_standup_channel(ack, respond, command, client):
         channel_info = await client.conversations_info(channel=channel_id)
         channel_name = channel_info["channel"]["name"]
     except Exception as e:
-        await respond(f"Error getting channel info: {str(e)}")
+        await respond(f"Error getting channel info: {str(e)}", response_type="in_channel"))
         return
 
     standup_channels = tracker.get_standup_channels(team_id)
     if channel_id in standup_channels:
-        await respond("✅ This channel is already set as a standup channel!")
+        await respond("✅ This channel is already set as a standup channel!", response_type="in_channel"))
         return
 
     tracker.add_standup_channel(channel_id, team_id, channel_name)
 
     await respond(
-        f"📋 *Standup Channel Set!*\n\nNow monitoring messages in <#{channel_id}>\n\n*What happens now:*\n• All messages in this channel will be tracked\n• Use `/ai_summary` to get AI-powered daily summaries\n• Use `/remove_standup_channel` to stop monitoring"
+        f"📋 *Standup Channel Set!*\n\nNow monitoring messages in <#{channel_id}>\n\n*What happens now:*\n• All messages in this channel will be tracked\n• Use `/ai_summary` to get AI-powered daily summaries\n• Use `/remove_standup_channel` to stop monitoring", response_type="in_channel"
     )
 
 
@@ -278,11 +278,11 @@ async def remove_standup_channel(ack, respond, command):
 
     standup_channels = tracker.get_standup_channels(team_id)
     if channel_id not in standup_channels:
-        await respond("This channel is not set as a standup channel.")
+        await respond("This channel is not set as a standup channel.", response_type="in_channel")
         return
 
     tracker.remove_standup_channel(channel_id)
-    await respond("✅ Removed standup monitoring from this channel.")
+    await respond("✅ Removed standup monitoring from this channel.", response_type="in_channel")
 
 
 @app.command("/ai_summary")
@@ -346,7 +346,7 @@ async def list_standup_channels(ack, respond, command, client):
     standup_channels = tracker.get_standup_channels(command["team_id"])
 
     if not standup_channels:
-        await respond("No standup channels configured. Use `/set_standup_channel` to add one.")
+        await respond("No standup channels configured. Use `/set_standup_channel` to add one.", response_type="in_channel")
         return
 
     channel_list = []
@@ -365,7 +365,7 @@ async def list_standup_channels(ack, respond, command, client):
     response = f"📋 *Standup Channels*\n\nChannels currently being monitored:\n\n" + "\n".join(
         channel_list
     )
-    await respond(response)
+    await respond(response, response_type="in_channel")
 
 
 @app.event("message")
