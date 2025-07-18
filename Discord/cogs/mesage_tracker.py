@@ -17,9 +17,6 @@ class MessageTrackerCog(commands.Cog):
         self.db_path = "standup_messages.db"
         self.init_database()
 
-        # Configure Gemini API
-        # genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        # self.model = genai.GenerativeModel("gemini-2.5-flash")
         self.client = genai.Client()
 
     def init_database(self):
@@ -223,7 +220,7 @@ class MessageTrackerCog(commands.Cog):
         messages_text = "\n".join(trimmed_messages)
 
         prompt = f"""
-        Please analyze the following standup messages from {channel_name} on {date} and provide a comprehensive summary.
+        Please analyze the following standup messages from {channel_name} on {date} and provide **ONE** comprehensive summary.
 
         Focus on:
         1. Key updates and progress made by team members
@@ -233,6 +230,7 @@ class MessageTrackerCog(commands.Cog):
         5. Overall team sentiment and productivity
 
         Format your response as a clear, organized summary that a manager could quickly read to understand the team's status.
+        Please send Only One summary, do not send multiple summaries.
 
         Messages:
         {messages_text}
