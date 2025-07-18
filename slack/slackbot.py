@@ -1,7 +1,7 @@
 import os
 import sqlite3
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 from collections import defaultdict
 from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
@@ -253,18 +253,22 @@ async def set_standup_channel(ack, respond, command, client):
         channel_info = await client.conversations_info(channel=channel_id)
         channel_name = channel_info["channel"]["name"]
     except Exception as e:
-        await respond(f"Error getting channel info: {str(e)}", response_type="in_channel"))
+        await respond(f"Error getting channel info: {str(e)}", response_type="in_channel")
         return
 
     standup_channels = tracker.get_standup_channels(team_id)
     if channel_id in standup_channels:
-        await respond("✅ This channel is already set as a standup channel!", response_type="in_channel"))
+        await respond(
+            "✅ This channel is already set as a standup channel!",
+            response_type="in_channel",
+        )
         return
 
     tracker.add_standup_channel(channel_id, team_id, channel_name)
 
     await respond(
-        f"📋 *Standup Channel Set!*\n\nNow monitoring messages in <#{channel_id}>\n\n*What happens now:*\n• All messages in this channel will be tracked\n• Use `/ai_summary` to get AI-powered daily summaries\n• Use `/remove_standup_channel` to stop monitoring", response_type="in_channel"
+        f"📋 *Standup Channel Set!*\n\nNow monitoring messages in <#{channel_id}>\n\n*What happens now:*\n• All messages in this channel will be tracked\n• Use `/ai_summary` to get AI-powered daily summaries\n• Use `/remove_standup_channel` to stop monitoring",
+        response_type="in_channel",
     )
 
 
@@ -346,7 +350,10 @@ async def list_standup_channels(ack, respond, command, client):
     standup_channels = tracker.get_standup_channels(command["team_id"])
 
     if not standup_channels:
-        await respond("No standup channels configured. Use `/set_standup_channel` to add one.", response_type="in_channel")
+        await respond(
+            "No standup channels configured. Use `/set_standup_channel` to add one.",
+            response_type="in_channel",
+        )
         return
 
     channel_list = []
