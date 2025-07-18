@@ -184,3 +184,8 @@ cython_debug/
 # macos ds stroe files 
 *.DS_Store 
 
+
+# json and db files 
+
+*.json 
+*.db
